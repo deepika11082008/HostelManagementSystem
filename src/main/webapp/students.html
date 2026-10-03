@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students - HostelHub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin: 8px 0;
+        }
+
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu .active {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .admin {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .content-box {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            opacity: 0.9;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dbe2ea;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-box input:focus {
+            border-color: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #edf0f4;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .active-status {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 11px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .edit {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 25px;
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        @media(max-width: 900px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 650px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .content-box {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            🏠 HostelHub
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="students.html" class="active">
+                    👨‍🎓 Students
+                </a>
+            </li>
+
+            <li>
+                <a href="rooms.html">
+                    🛏️ Rooms
+                </a>
+            </li>
+
+            <li>
+                <a href="requests.html">
+                    📩 Requests
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📈 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    ⚙️ Settings
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Students</h1>
+
+                <p>
+                    Manage hostel student records
+                </p>
+            </div>
+
+            <div class="admin">
+                👤 Admin
+            </div>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+            <div class="card">
+
+                <h3>
+                    Total Students
+                </h3>
+
+                <div
+                    class="number"
+                    id="totalStudents">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Active Students
+                </h3>
+
+                <div
+                    class="number"
+                    id="activeStudents">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    New Students
+                </h3>
+
+                <div class="number">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Available Rooms
+                </h3>
+
+                <div class="number">
+                    12
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STUDENT TABLE -->
+
+        <div class="content-box">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Student Records
+                    </h2>
+
+                    <p
+                        style="color:#64748b; margin-top:5px;">
+                        View and manage hostel students
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="add-btn"
+                    onclick="addStudent()">
+
+                    + Add Student
+
+                </button>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search by Register Number, Name or Department..."
+                    onkeyup="searchStudent()">
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <table id="studentTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Register No
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Room No
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="loading">
+
+                            Loading student records...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        // LOAD STUDENTS FROM ORACLE DATABASE
+
+        function loadStudents() {
+
+            fetch("StudentServlet")
+
+                .then(response => {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Server returned an error"
+                        );
+
+                    }
+
+                    return response.text();
+
+                })
+
+                .then(data => {
+
+                    displayStudents(data);
+
+                })
+
+                .catch(error => {
+
+                    console.error(
+                        "Error:",
+                        error
+                    );
+
+                    document.getElementById(
+                        "studentTableBody"
+                    ).innerHTML =
+
+                        `
+                        <tr>
+                            <td
+                                colspan="7"
+                                class="error-message">
+
+                                Unable to load student records.
+
+                            </td>
+                        </tr>
+                        `;
+
+                });
+
+        }
+
+
+        // EXTRACT STUDENT TABLE FROM SERVLET RESPONSE
+
+        function displayStudents(data) {
+
+            let parser =
+                new DOMParser();
+
+            let doc =
+                parser.parseFromString(
+                    data,
+                    "text/html"
+                );
+
+            let rows =
+                doc.querySelectorAll(
+                    "table tr"
+                );
+
+            let tableBody =
+                document.getElementById(
+                    "studentTableBody"
+                );
+
+            tableBody.innerHTML = "";
+
+
+            let total = 0;
+
+            let active = 0;
+
+
+            // SKIP HEADER ROW
+
+            for (
+                let i = 1;
+                i < rows.length;
+                i++
+            ) {
+
+                let cells =
+                    rows[i].querySelectorAll(
+                        "td"
+                    );
+
+
+                if (cells.length < 6) {
+                    continue;
+                }
+
+
+                let registerNo =
+                    cells[0].innerText;
+
+                let name =
+                    cells[1].innerText;
+
+                let department =
+                    cells[2].innerText;
+
+                let roomNo =
+                    cells[3].innerText;
+
+                let phone =
+                    cells[4].innerText;
+
+                let status =
+                    cells[5].innerText;
+
+
+                let row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                row.innerHTML =
+
+                    `
+                    <td>
+                        ${registerNo}
+                    </td>
+
+                    <td>
+                        ${name}
+                    </td>
+
+                    <td>
+                        ${department}
+                    </td>
+
+                    <td>
+                        ${roomNo}
+                    </td>
+
+                    <td>
+                        ${phone}
+                    </td>
+
+                    <td>
+
+                        <span class="status active-status">
+
+                            ${status}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="action-btn edit"
+                            onclick="editStudent('${registerNo}')">
+
+                            Edit
+
+                        </button>
+
+                        <button
+                            class="action-btn delete"
+                            onclick="deleteStudent('${registerNo}')">
+
+                            Delete
+
+                        </button>
+
+                    </td>
+                    `;
+
+
+                tableBody.appendChild(row);
+
+
+                total++;
+
+
+                if (
+                    status.toLowerCase() ===
+                    "active"
+                ) {
+
+                    active++;
+
+                }
+
+            }
+
+
+            document.getElementById(
+                "totalStudents"
+            ).innerText = total;
+
+
+            document.getElementById(
+                "activeStudents"
+            ).innerText = active;
+
+
+            if (total === 0) {
+
+                tableBody.innerHTML =
+
+                    `
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="loading">
+
+                            No student records found.
+
+                        </td>
+
+                    </tr>
+                    `;
+
+            }
+
+        }
+
+
+        // SEARCH STUDENT
+
+        function searchStudent() {
+
+            let input =
+                document.getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase();
+
+
+            let rows =
+                document
+                .getElementById(
+                    "studentTableBody"
+                )
+                .getElementsByTagName(
+                    "tr"
+                );
+
+
+            for (
+                let i = 0;
+                i < rows.length;
+                i++
+            ) {
+
+                let rowText =
+                    rows[i]
+                    .innerText
+                    .toLowerCase();
+
+
+                if (
+                    rowText.includes(input)
+                ) {
+
+                    rows[i].style.display =
+                        "";
+
+                } else {
+
+                    rows[i].style.display =
+                        "none";
+
+                }
+
+            }
+
+        }
+
+
+        // ADD STUDENT
+
+        function addStudent() {
+
+            window.location.href =
+                "add-student.html";
+
+        }
+
+
+        // EDIT STUDENT
+        // Will be connected to Servlet later
+
+        function editStudent(registerNo) {
+
+            alert(
+                "Edit Student: " +
+                registerNo
+            );
+
+        }
+
+
+        // DELETE STUDENT
+        // Will be connected to Servlet later
+
+        function deleteStudent(registerNo) {
+
+            alert(
+                "Delete Student: " +
+                registerNo
+            );
+
+        }
+
+
+        // LOAD DATABASE RECORDS WHEN PAGE OPENS
+
+        window.onload =
+            function() {
+
+                loadStudents();
+
+            };
+
+    </script>
+
+</body>
+</html>

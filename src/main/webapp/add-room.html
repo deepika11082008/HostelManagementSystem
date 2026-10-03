@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Room - HostelHub</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin: 8px 0;
+        }
+
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu .active {
+            background: rgba(255,255,255,0.18);
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .admin {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        /* FORM */
+
+        .form-box {
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            max-width: 750px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .form-box h2 {
+            margin-bottom: 8px;
+        }
+
+        .form-box .description {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .button-area {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        .cancel-btn {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            padding: 13px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .cancel-btn:hover {
+            background: #cbd5e1;
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            🏠 HostelHub
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">📊 Dashboard</a>
+            </li>
+
+            <li>
+                <a href="students.html">👨‍🎓 Students</a>
+            </li>
+
+            <li>
+                <a href="rooms.html" class="active">🛏️ Rooms</a>
+            </li>
+
+            <li>
+                <a href="requests.html">📩 Requests</a>
+            </li>
+
+            <li>
+                <a href="#">💰 Fees</a>
+            </li>
+
+            <li>
+                <a href="#">📈 Reports</a>
+            </li>
+
+            <li>
+                <a href="#">⚙️ Settings</a>
+            </li>
+
+            <li>
+                <a href="index.html">🚪 Logout</a>
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Add Room</h1>
+                <p>Add a new hostel room to the system</p>
+            </div>
+
+            <div class="admin">
+                👤 Admin
+            </div>
+
+        </div>
+
+
+        <div class="form-box">
+
+            <h2>Room Information</h2>
+
+            <p class="description">
+                Enter the details of the new hostel room.
+            </p>
+
+
+            <form action="RoomServlet" method="post">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Room Number</label>
+
+                        <input
+                            type="text"
+                            name="roomNo"
+                            placeholder="Example: R-109"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Floor Number</label>
+
+                        <input
+                            type="number"
+                            name="floorNo"
+                            placeholder="Example: 2"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Room Capacity</label>
+
+                        <input
+                            type="number"
+                            name="capacity"
+                            placeholder="Example: 4"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Current Occupied</label>
+
+                        <input
+                            type="number"
+                            name="occupied"
+                            placeholder="Example: 0"
+                            min="0"
+                            value="0"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="button-area">
+
+                    <button
+                        type="submit"
+                        class="save-btn">
+                        ➕ Add Room
+                    </button>
+
+                    <a
+                        href="rooms.html"
+                        class="cancel-btn">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

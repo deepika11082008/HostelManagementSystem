@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests - HostelHub</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin: 8px 0;
+        }
+
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .menu a:hover,
+        .menu .active {
+            background: rgba(255,255,255,0.18);
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .admin {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        /* STATISTICS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* REQUEST BOX */
+        .content-box {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .section-header p {
+            color: #64748b;
+        }
+
+        /* FORM */
+        .request-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .request-form input,
+        .request-form select {
+            padding: 13px;
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            outline: none;
+        }
+
+        .request-form input:focus,
+        .request-form select:focus {
+            border-color: #2563eb;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* TABLE */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #edf0f4;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* STATUS */
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .completed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        /* PROCESS BUTTON */
+        .process-btn {
+            border: none;
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 8px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .process-btn:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* QUEUE INFO */
+        .queue-info {
+            margin-top: 25px;
+            padding: 18px;
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            border-radius: 10px;
+        }
+
+        .queue-info h3 {
+            margin-bottom: 8px;
+            color: #1d4ed8;
+        }
+
+        .queue-info p {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        /* MESSAGE */
+        .message {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 1200px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .request-form {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .request-form {
+                grid-template-columns: 1fr;
+            }
+
+            .content-box {
+                overflow-x: auto;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo">
+            🏠 HostelHub
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="students.html">
+                    👨‍🎓 Students
+                </a>
+            </li>
+
+            <li>
+                <a href="rooms.html">
+                    🛏️ Rooms
+                </a>
+            </li>
+
+            <li>
+                <a href="requests.html" class="active">
+                    📩 Requests
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📈 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    ⚙️ Settings
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+
+            <div>
+                <h1>Hostel Requests</h1>
+                <p>Manage student requests and complaints</p>
+            </div>
+
+            <div class="admin">
+                👤 Admin
+            </div>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+        <div class="stats">
+
+            <div class="card">
+
+                <h3>Total Requests</h3>
+
+                <div
+                    class="number"
+                    id="totalRequests">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Pending</h3>
+
+                <div
+                    class="number"
+                    id="pendingRequests">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Completed</h3>
+
+                <div
+                    class="number"
+                    id="completedRequests">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Queue Position</h3>
+
+                <div
+                    class="number"
+                    id="queuePosition">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REQUEST CONTENT -->
+        <div class="content-box">
+
+            <div class="section-header">
+
+                <h2>Request Queue</h2>
+
+                <p>
+                    Requests are processed in
+                    First-In-First-Out order.
+                </p>
+
+            </div>
+
+
+            <!-- ADD REQUEST FORM -->
+
+            <form
+                action="RequestServlet"
+                method="post"
+                class="request-form">
+
+                <input
+                    type="number"
+                    name="requestId"
+                    placeholder="Request ID"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="registerNo"
+                    placeholder="Register Number"
+                    required
+                >
+
+                <select
+                    name="requestType"
+                    required>
+
+                    <option value="">
+                        Select Request
+                    </option>
+
+                    <option value="Room Change">
+                        Room Change
+                    </option>
+
+                    <option value="Maintenance">
+                        Maintenance
+                    </option>
+
+                    <option value="Leave Request">
+                        Leave Request
+                    </option>
+
+                    <option value="Complaint">
+                        Complaint
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+                <input
+                    type="text"
+                    value="Pending"
+                    readonly
+                >
+
+                <button
+                    type="submit"
+                    class="add-btn">
+
+                    + Add Request
+
+                </button>
+
+            </form>
+
+
+            <!-- REQUEST TABLE -->
+
+            <div
+                class="table-container"
+                id="requestTable">
+
+                <div class="message">
+                    Loading requests...
+                </div>
+
+            </div>
+
+
+            <!-- QUEUE EXPLANATION -->
+
+            <div class="queue-info">
+
+                <h3>
+                    📌 Queue Data Structure
+                </h3>
+
+                <p>
+
+                    Hostel requests follow the
+                    <strong>FIFO (First-In-First-Out)</strong>
+                    principle.
+
+                    The request that enters the queue first
+                    is processed first.
+
+                </p>
+
+                <p style="margin-top:8px;">
+
+                    <strong>Enqueue:</strong>
+                    Add a new request
+
+                    &nbsp; | &nbsp;
+
+                    <strong>Dequeue:</strong>
+                    Process the first request
+
+                    &nbsp; | &nbsp;
+
+                    <strong>Front:</strong>
+                    First pending request
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // LOAD REQUESTS FROM ORACLE
+        function loadRequests() {
+
+            fetch("RequestServlet")
+
+                .then(function(response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "RequestServlet returned error"
+                        );
+
+                    }
+
+                    return response.text();
+
+                })
+
+                .then(function(data) {
+
+                    const parser =
+                        new DOMParser();
+
+                    const doc =
+                        parser.parseFromString(
+                            data,
+                            "text/html"
+                        );
+
+                    const originalTable =
+                        doc.querySelector("table");
+
+                    if (!originalTable) {
+
+                        document.getElementById(
+                            "requestTable"
+                        ).innerHTML =
+                            `
+                            <div class="message error">
+                                Unable to load requests.
+                            </div>
+                            `;
+
+                        return;
+                    }
+
+
+                    /*
+                     * Create our own table so that
+                     * the HostelHub design is preserved.
+                     */
+
+                    const rows =
+                        originalTable.querySelectorAll("tr");
+
+
+                    let html = `
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Queue No</th>
+                                    <th>Request ID</th>
+                                    <th>Register No</th>
+                                    <th>Request</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+                    `;
+
+
+                    let total = 0;
+                    let pending = 0;
+                    let completed = 0;
+                    let queuePosition = 0;
+
+
+                    rows.forEach(function(row, index) {
+
+                        // Skip table heading
+                        if (index === 0) {
+                            return;
+                        }
+
+
+                        const cells =
+                            row.querySelectorAll("td");
+
+
+                        if (cells.length < 5) {
+                            return;
+                        }
+
+
+                        total++;
+
+
+                        const requestId =
+                            cells[0].innerText.trim();
+
+                        const registerNo =
+                            cells[1].innerText.trim();
+
+                        const requestType =
+                            cells[2].innerText.trim();
+
+                        const requestDate =
+                            cells[3].innerText.trim();
+
+                        const status =
+                            cells[4].innerText.trim();
+
+
+                        if (
+                            status.toLowerCase() ===
+                            "pending"
+                        ) {
+
+                            pending++;
+
+                        }
+
+
+                        if (
+                            status.toLowerCase() ===
+                            "completed"
+                        ) {
+
+                            completed++;
+
+                        }
+
+
+                        if (
+                            status.toLowerCase() ===
+                            "pending" &&
+                            queuePosition === 0
+                        ) {
+
+                            queuePosition =
+                                pending;
+
+                        }
+
+
+                        let statusClass =
+                            status.toLowerCase() ===
+                            "completed"
+                            ? "completed"
+                            : "pending";
+
+
+                        let actionButton = "";
+
+
+                        if (
+                            status.toLowerCase() ===
+                            "pending"
+                        ) {
+
+                            actionButton = `
+                                <button
+                                    class="process-btn"
+                                    onclick="processRequest(
+                                        ${requestId}
+                                    )">
+
+                                    Process
+
+                                </button>
+                            `;
+
+                        } else {
+
+                            actionButton = `
+                                <span>
+                                    ✔ Completed
+                                </span>
+                            `;
+
+                        }
+
+
+                        html += `
+
+                            <tr>
+
+                                <td>${total}</td>
+
+                                <td>${requestId}</td>
+
+                                <td>${registerNo}</td>
+
+                                <td>${requestType}</td>
+
+                                <td>${requestDate}</td>
+
+                                <td>
+
+                                    <span
+                                        class="status ${statusClass}">
+
+                                        ${status}
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+                                    ${actionButton}
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    });
+
+
+                    html += `
+                            </tbody>
+                        </table>
+                    `;
+
+
+                    document.getElementById(
+                        "requestTable"
+                    ).innerHTML = html;
+
+
+                    document.getElementById(
+                        "totalRequests"
+                    ).innerText = total;
+
+
+                    document.getElementById(
+                        "pendingRequests"
+                    ).innerText = pending;
+
+
+                    document.getElementById(
+                        "completedRequests"
+                    ).innerText = completed;
+
+
+                    document.getElementById(
+                        "queuePosition"
+                    ).innerText = pending;
+
+                })
+
+                .catch(function(error) {
+
+                    console.error(error);
+
+                    document.getElementById(
+                        "requestTable"
+                    ).innerHTML =
+                        `
+                        <div class="message error">
+                            Unable to connect to RequestServlet.
+                            <br>
+                            Please check Tomcat and Oracle connection.
+                        </div>
+                        `;
+
+                });
+
+        }
+
+
+        // PROCESS REQUEST
+        function processRequest(requestId) {
+
+            alert(
+                "FIFO Queue: Request ID " +
+                requestId +
+                " is selected for processing."
+            );
+
+            /*
+             * Database processing will be connected
+             * in the next step.
+             */
+
+        }
+
+
+        // LOAD DATA WHEN PAGE OPENS
+        window.addEventListener(
+            "load",
+            loadRequests
+        );
+
+    </script>
+
+</body>
+</html>

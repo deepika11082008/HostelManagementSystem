@@ -1,0 +1,25 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Java compiled files
+build/
+bin/
+*.class
+
+# Oracle JDBC driver
+*.jar
+
+# Tomcat generated files
+work/
+temp/
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+*.env

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rooms - HostelHub</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+            padding-left: 10px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin: 8px 0;
+        }
+
+        .menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .menu a:hover,
+        .menu .active {
+            background: rgba(255,255,255,0.18);
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .admin {
+            background: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        /* ROOM SECTION */
+
+        .content-box {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ROOM GRID */
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .room-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            transition: 0.3s;
+            background: white;
+        }
+
+        .room-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .room-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .room-number {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .room-type {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .floor {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .occupancy {
+            margin-bottom: 15px;
+        }
+
+        .occupancy-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .progress {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            border-radius: 10px;
+        }
+
+        .room-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .available {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .occupied {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .partial {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 16px;
+            grid-column: 1 / -1;
+        }
+
+        .error {
+            text-align: center;
+            padding: 30px;
+            color: #dc2626;
+            background: #fee2e2;
+            border-radius: 12px;
+            grid-column: 1 / -1;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 1100px) {
+
+            .room-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .room-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            🏠 HostelHub
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="students.html">
+                    👨‍🎓 Students
+                </a>
+            </li>
+
+            <li>
+                <a href="rooms.html" class="active">
+                    🛏️ Rooms
+                </a>
+            </li>
+
+            <li>
+                <a href="requests.html">
+                    📩 Requests
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    📈 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="#">
+                    ⚙️ Settings
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>
+                    Room Management
+                </h1>
+
+                <p>
+                    Manage hostel rooms and occupancy
+                </p>
+
+            </div>
+
+            <div class="admin">
+                👤 Admin
+            </div>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+
+        <div class="stats">
+
+            <div class="card">
+
+                <h3>
+                    Total Rooms
+                </h3>
+
+                <div
+                    class="number"
+                    id="totalRooms">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Occupied Rooms
+                </h3>
+
+                <div
+                    class="number"
+                    id="occupiedRooms">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Available Rooms
+                </h3>
+
+                <div
+                    class="number"
+                    id="availableRooms">
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>
+                    Total Capacity
+                </h3>
+
+                <div
+                    class="number"
+                    id="totalCapacity">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ROOMS -->
+
+        <div class="content-box">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Hostel Rooms
+                    </h2>
+
+                    <p>
+                        Check room availability and occupancy
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="add-btn"
+                    onclick="addRoom()">
+
+                    + Add Room
+
+                </button>
+
+            </div>
+
+
+            <!-- ROOM GRID -->
+
+            <div
+                class="room-grid"
+                id="roomGrid">
+
+                <div class="loading">
+                    Loading rooms...
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+
+        /* OPEN ADD ROOM PAGE */
+
+        function addRoom() {
+
+            window.location.href =
+                "add-room.html";
+
+        }
+
+
+        /* LOAD ROOMS FROM ORACLE */
+
+        function loadRooms() {
+
+            fetch("RoomServlet")
+
+                .then(function(response) {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "RoomServlet returned error: "
+                            + response.status
+                        );
+
+                    }
+
+                    return response.text();
+
+                })
+
+                .then(function(data) {
+
+                    const parser =
+                        new DOMParser();
+
+                    const doc =
+                        parser.parseFromString(
+                            data,
+                            "text/html"
+                        );
+
+
+                    const rows =
+                        doc.querySelectorAll(
+                            "table tr"
+                        );
+
+
+                    const roomGrid =
+                        document.getElementById(
+                            "roomGrid"
+                        );
+
+
+                    roomGrid.innerHTML = "";
+
+
+                    let totalRooms = 0;
+                    let occupiedRooms = 0;
+                    let availableRooms = 0;
+                    let totalCapacity = 0;
+
+
+                    rows.forEach(
+                        function(row, index) {
+
+                            /* Skip table header */
+
+                            if (index === 0) {
+                                return;
+                            }
+
+
+                            const cells =
+                                row.querySelectorAll(
+                                    "td"
+                                );
+
+
+                            if (cells.length < 5) {
+                                return;
+                            }
+
+
+                            const roomNo =
+                                cells[0]
+                                .textContent
+                                .trim();
+
+
+                            const floorNo =
+                                cells[1]
+                                .textContent
+                                .trim();
+
+
+                            const capacity =
+                                parseInt(
+                                    cells[2]
+                                    .textContent
+                                    .trim()
+                                );
+
+
+                            const occupied =
+                                parseInt(
+                                    cells[3]
+                                    .textContent
+                                    .trim()
+                                );
+
+
+                            const status =
+                                cells[4]
+                                .textContent
+                                .trim();
+
+
+                            totalRooms++;
+
+
+                            totalCapacity +=
+                                capacity;
+
+
+                            if (
+                                occupied >= capacity
+                            ) {
+
+                                occupiedRooms++;
+
+                            }
+
+
+                            if (occupied === 0) {
+
+                                availableRooms++;
+
+                            }
+
+
+                            const percentage =
+                                capacity > 0
+                                ? (
+                                    occupied /
+                                    capacity
+                                  ) * 100
+                                : 0;
+
+
+                            let statusClass =
+                                "available";
+
+
+                            let statusText =
+                                "Available";
+
+
+                            if (
+                                occupied >= capacity
+                            ) {
+
+                                statusClass =
+                                    "occupied";
+
+                                statusText =
+                                    "Fully Occupied";
+
+                            }
+
+                            else if (
+                                occupied > 0
+                            ) {
+
+                                statusClass =
+                                    "partial";
+
+                                const beds =
+                                    capacity -
+                                    occupied;
+
+                                statusText =
+                                    beds +
+                                    (
+                                        beds === 1
+                                        ? " Bed Available"
+                                        : " Beds Available"
+                                    );
+
+                            }
+
+
+                            const roomCard =
+                                document.createElement(
+                                    "div"
+                                );
+
+
+                            roomCard.className =
+                                "room-card";
+
+
+                            roomCard.innerHTML = `
+
+                                <div class="room-icon">
+                                    🛏️
+                                </div>
+
+                                <div class="room-number">
+                                    Room ${roomNo}
+                                </div>
+
+                                <div class="room-type">
+                                    ${capacity} Bed Room
+                                </div>
+
+                                <div class="floor">
+                                    🏢 Floor ${floorNo}
+                                </div>
+
+                                <div class="occupancy">
+
+                                    <div class="occupancy-text">
+
+                                        <span>
+                                            Occupancy
+                                        </span>
+
+                                        <span>
+                                            ${occupied} / ${capacity}
+                                        </span>
+
+                                    </div>
+
+                                    <div class="progress">
+
+                                        <div
+                                            class="progress-bar"
+                                            style="width:${percentage}%">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <span
+                                    class="room-status ${statusClass}">
+
+                                    ${statusText}
+
+                                </span>
+
+                            `;
+
+
+                            roomGrid.appendChild(
+                                roomCard
+                            );
+
+                        }
+                    );
+
+
+                    /* UPDATE STATISTICS */
+
+                    document.getElementById(
+                        "totalRooms"
+                    ).textContent =
+                        totalRooms;
+
+
+                    document.getElementById(
+                        "occupiedRooms"
+                    ).textContent =
+                        occupiedRooms;
+
+
+                    document.getElementById(
+                        "availableRooms"
+                    ).textContent =
+                        availableRooms;
+
+
+                    document.getElementById(
+                        "totalCapacity"
+                    ).textContent =
+                        totalCapacity;
+
+
+                    /* NO ROOMS */
+
+                    if (totalRooms === 0) {
+
+                        roomGrid.innerHTML = `
+                            <div class="loading">
+                                No rooms found in the database.
+                            </div>
+                        `;
+
+                    }
+
+                })
+
+
+                .catch(function(error) {
+
+                    console.error(
+                        "Error loading rooms:",
+                        error
+                    );
+
+
+                    document.getElementById(
+                        "roomGrid"
+                    ).innerHTML = `
+
+                        <div class="error">
+
+                            ❌ Unable to load rooms.
+
+                            <br><br>
+
+                            Make sure Tomcat and
+                            RoomServlet are running.
+
+                        </div>
+
+                    `;
+
+                });
+
+        }
+
+
+        /* LOAD WHEN PAGE OPENS */
+
+        window.addEventListener(
+            "load",
+            loadRooms
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
